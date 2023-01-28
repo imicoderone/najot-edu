@@ -49,6 +49,8 @@ namespace NajotEdu.Infrastructure
                 });
             });
 
+            AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
+
             return services;
         }
     }
