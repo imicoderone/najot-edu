@@ -17,7 +17,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\NajotEdu.Domain\NajotEdu.Domain.csproj" />
+    <ProjectReference Include="..\NajotEdu.Application\NajotEdu.Application.csproj" />
   </ItemGroup>
 
 </Project>

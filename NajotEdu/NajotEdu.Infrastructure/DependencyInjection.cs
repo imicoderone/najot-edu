@@ -1,13 +1,15 @@
-﻿using System.Text;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
+﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
+using NajotEdu.Application.Abstractions;
 using NajotEdu.Domain.Enums;
 using NajotEdu.Infrastructure.Abstractions;
 using NajotEdu.Infrastructure.Persistence;
+using NajotEdu.Infrastructure.Providers;
 using NajotEdu.Infrastructure.Services;
+using System.Text;
 
 namespace NajotEdu.Infrastructure
 {
@@ -19,8 +21,10 @@ namespace NajotEdu.Infrastructure
             services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseNpgsql(configuration.GetConnectionString("DefaultConnection")));
 
+            services.AddScoped<IApplicationDbContext, ApplicationDbContext>();
             services.AddScoped<ITokenService, JWTService>();
             services.AddScoped<IAuthService, AuthService>();
+            services.AddScoped<IHashProvider, HashProvider>();
 
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 .AddJwtBearer(options =>
