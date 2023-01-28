@@ -22,6 +22,7 @@ namespace NajotEdu.Infrastructure
                 options.UseNpgsql(configuration.GetConnectionString("DefaultConnection")));
 
             services.AddScoped<IApplicationDbContext, ApplicationDbContext>();
+            services.AddScoped<ICurrentUserService, CurrentUserService>();
             services.AddScoped<ITokenService, JWTService>();
             services.AddScoped<IAuthService, AuthService>();
             services.AddScoped<IHashProvider, HashProvider>();

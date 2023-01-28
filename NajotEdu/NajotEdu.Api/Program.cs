@@ -4,6 +4,8 @@ using NajotEdu.Infrastructure;
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.Services.AddHttpContextAccessor();
+
 builder.Services.AddInfrastructure(builder.Configuration);
 builder.Services.AddApplication();
 
