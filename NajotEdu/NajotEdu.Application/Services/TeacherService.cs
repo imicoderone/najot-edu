@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using AutoMapper;
+using Microsoft.EntityFrameworkCore;
 using NajotEdu.Application.Abstractions;
 using NajotEdu.Application.Models;
 using NajotEdu.Domain.Entities;
@@ -10,47 +11,34 @@ namespace NajotEdu.Application.Services
     {
         private readonly IApplicationDbContext _context;
         private readonly IHashProvider _hashProvider;
+        private readonly IMapper _mapper;
 
-        public TeacherService(IApplicationDbContext context, IHashProvider hashProvider)
+        public TeacherService(IApplicationDbContext context, IHashProvider hashProvider, IMapper mapper)
         {
             _context = context;
             _hashProvider = hashProvider;
+            _mapper = mapper;
         }
 
         public async Task<TeacherViewModel> GetByIdAsync(int id)
         {
             var entity = await _context.Users.FirstOrDefaultAsync(x => x.Id == id && x.Role == UserRole.Teacher);
 
-            return new TeacherViewModel()
-            {
-                Id = entity.Id,
-                UserName = entity.UserName,
-                Fullname = entity.Fullname
-            };
+            return _mapper.Map<TeacherViewModel>(entity);
         }
 
         public async Task<List<TeacherViewModel>> GetAllAsync()
         {
-            return await _context.Users
+            var list = await _context.Users
                 .Where(x => x.Role == UserRole.Teacher)
-                .Select(x => new TeacherViewModel()
-                {
-                    Id = x.Id,
-                    UserName = x.UserName,
-                    Fullname = x.Fullname
-                })
                 .ToListAsync();
+
+            return _mapper.Map<List<TeacherViewModel>>(list);
         }
 
         public async Task CreateAsync(CreateTeacherModel model)
         {
-            var entity = new User()
-            {
-                UserName = model.UserName,
-                PasswordHash = _hashProvider.GetHash(model.Password),
-                Fullname = model.Fullname,
-                Role = UserRole.Teacher
-            };
+            var entity = _mapper.Map<User>(model);
 
             _context.Users.Add(entity);
             await _context.SaveChangesAsync();
@@ -65,10 +53,8 @@ namespace NajotEdu.Application.Services
                 throw new Exception("Not found");
             }
 
-            entity.UserName = model.UserName ?? entity.UserName;
-            entity.Fullname = model.Fullname ?? entity.Fullname;
-            entity.PasswordHash = model.Password == null ? entity.PasswordHash : _hashProvider.GetHash(model.Password);
-
+            entity = _mapper.Map(model, entity);
+            
             _context.Users.Update(entity);
             await _context.SaveChangesAsync();
         }
