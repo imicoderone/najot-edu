@@ -26,6 +26,7 @@ namespace NajotEdu.Infrastructure
             services.AddScoped<ITokenService, JWTService>();
             services.AddScoped<IAuthService, AuthService>();
             services.AddScoped<IHashProvider, HashProvider>();
+            services.AddScoped<IFileService, FileService>();
 
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 .AddJwtBearer(options =>
